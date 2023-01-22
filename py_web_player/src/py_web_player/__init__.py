@@ -1,0 +1,3 @@
+from flask import Flask
+app = Flask(__name__, template_folder='templates')
+from py_web_player import routes

@@ -1,0 +1,9 @@
+__pycache__
+.vscode
+dist
+build
+mpyg321.egg-info
+examples/*.mp3
+examples/mpyg321
+examples/tests.py
+examples/*.txt

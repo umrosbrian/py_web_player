@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Player</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <!--<link href="/static/css/bootstrap.min.css" rel="stylesheet">-->
+</head>
+<body>
+<div class="container">
+   <!--<div class="row" >-->
+    {% if currently_playing_file_name %}
+    <h4>currently playing: {{ currently_playing_file_name}}</h4>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('index', command='stop')}}" class="btn btn-primary btn-sm" role="button">Stop</a>
+    <br>
+    <br>
+    <a href="{{ url_for('index', command='play_all_files')}}" class="btn btn-primary btn-sm" role="button">Play all files</a>
+
+
+    <h4>Subdirectories:</h4>
+    <h4>CWD: {{dir_aps_from_request}}</h4>
+    <a href="{{ url_for('index', cd_to_parent=True)}}" class="btn btn-primary btn-sm" role="button">Back</a><br>
+    <br>
+    <div class="list-group">
+        {% for dir_name in dir_names_in_dir_from_request %}
+
+        <a href="{{ url_for('index', dir_name=dir_name)}}">{{dir_name}}
+
+        </a><br>
+        {% endfor %}
+
+    </div>
+    <h4>Audio files:</h4>
+        {% for mp3_file_name in mp3_file_names_in_dir_from_request %}
+        <a href="{{ url_for('index', mp3_file_name=mp3_file_name)}}">{{mp3_file_name}}</a><br>
+        {% endfor %}
+</div>
+</body>
+</html>
