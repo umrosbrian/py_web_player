@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+{{ turbo() }}
 <head>
     <title>Music Player</title>
     <meta charset="utf-8">
@@ -12,26 +13,31 @@
 <body>
 <div class="container">
    <!--<div class="row" >-->
-    {% if currently_playing_file_name %}
-    <h4>currently playing: {{ currently_playing_file_name}}</h4>
+    {% if currently_playing_file_aps %}
+    <h4>currently playing: {{ currently_playing_file_aps}}</h4>
     {% endif %}
-
     <br>
-    <a href="{{ url_for('index', command='stop')}}" class="btn btn-primary btn-sm" role="button">Stop</a>
+    <a href="{{ url_for('index', command='pause')}}" class="btn btn-primary btn-sm" role="button">Pause</a>
+    <a href="{{ url_for('index', command='resume')}}" class="btn btn-primary btn-sm" role="button">Resume</a>
+    <a href="{{ url_for('index', command='fast_forward')}}" class="btn btn-primary btn-sm" role="button">Fast Forward</a>
     <br>
     <br>
     <a href="{{ url_for('index', command='play_all_files')}}" class="btn btn-primary btn-sm" role="button">Play all files</a>
 
+    {% block content %}
+        <div class="container">
+            {% include 'mpg123_status_widget.html' %}
+        </div>
+    {% endblock %}
 
-    <h4>Subdirectories:</h4>
     <h4>CWD: {{dir_aps_from_request}}</h4>
     <a href="{{ url_for('index', cd_to_parent=True)}}" class="btn btn-primary btn-sm" role="button">Back</a><br>
     <br>
+
+    <h4>Subdirectories:</h4>
     <div class="list-group">
         {% for dir_name in dir_names_in_dir_from_request %}
-
         <a href="{{ url_for('index', dir_name=dir_name)}}">{{dir_name}}
-
         </a><br>
         {% endfor %}
 
@@ -40,6 +46,14 @@
         {% for mp3_file_name in mp3_file_names_in_dir_from_request %}
         <a href="{{ url_for('index', mp3_file_name=mp3_file_name)}}">{{mp3_file_name}}</a><br>
         {% endfor %}
+
+<!--<div id="async_table" class="load_table">
+  <table>
+    <tr><th>mpg123 status:</th><td>{{ mpg123_stdout }}</td></tr>
+    <tr><th>count:</th><td>{{ cnt }}</td></tr>
+  </table>
+    </div>-->
+
 </div>
 </body>
 </html>

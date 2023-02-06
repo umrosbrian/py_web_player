@@ -10,6 +10,7 @@ import subprocess
 from threading import Thread
 from .MpygError import *
 from .consts import *
+import logging
 
 
 class BasePlayer:
@@ -25,13 +26,14 @@ class BasePlayer:
     player_version = None         # defined inside check_player
     mpg_outs = []
 
-    def __init__(self, player=None, audiodevice=None, performance_mode=True, custom_args=""):
+    def __init__(self, player=None, audiodevice=None, performance_mode=False, custom_args=""):
         """Builds the player and creates the callbacks"""
         self.set_player(player, audiodevice, custom_args)
         self.output_processor = Thread(target=self.process_output)
         self.output_processor.daemon = True
         self.performance_mode = performance_mode
         self.output_processor.start()
+        logging.debug("BasePlayer has been instantiated.")
 
     def check_player(self, player):
         """Gets the player"""
@@ -58,19 +60,26 @@ player (Mpyg321Player or Mpyg123Player)""")
         args = " " + custom_args if custom_args != "" else ""
         args += " --audiodevice " + audiodevice if audiodevice else ""
         args += " -R mpyg"
+        logging.debug(f"Issuing pexpect.spawn(str({player}) + \" \" + {args})")
         self.player = pexpect.spawn(str(player) + " " + args)
         self.player.delaybeforesend = None
         self.status = PlayerStatus.INSTANCIATED
+        logging.debug(f"BasePlayer.status: {self.status}")
         # Setting extended mpg_outs for version specific behaviors
         self.mpg_outs = mpg_outs.copy()
         self.mpg_outs.extend(mpg_outs_ext[self.player_version])
+        logging.debug(f"BasePlayer.mpg_outs: {self.mpg_outs}")
 
     def process_output(self):
         """Parses the output"""
         mpg_codes = [v["mpg_code"] for v in self.mpg_outs]
         while True:
+            mpg_output = self.player.readline()
+            print(f"mpg_output: {mpg_output}")
             index = self.player.expect(mpg_codes)
+            logging.debug(f"index: {index}")
             action = self.mpg_outs[index]["action"]
+            logging.debug(f"action: {action}")
             if action == "music_stop":
                 self.on_music_stop_int()
             elif action == "user_pause":
@@ -96,6 +105,7 @@ player (Mpyg321Player or Mpyg123Player)""")
 
     def play(self):
         """Starts playing the song"""
+        logging.debug(f"Issuing self.player.sendline(\"LOAD \" + {self.song_path})")
         self.player.sendline("LOAD " + self.song_path)
         self.status = PlayerStatus.PLAYING
 

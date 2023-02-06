@@ -1,50 +1,55 @@
 from pexpect import TIMEOUT as pexpectTIMEOUT
 mpg_outs = [
-    {
+    {  # 0
         "mpg_code": "@P 0",
         "action": "music_stop",
         "description": """For mpg123, it corresponds to any stop
                         For mpg312 it corresponds to user stop only"""
     },
-    {
+    {  # 1
         "mpg_code": "@P 1",
         "action": "user_pause",
         "description": "Music has been paused by the user."
     },
-    {
+    {  # 2
         "mpg_code": "@P 2",
         "action": "user_start_or_resume",
         "description": "Music has been started resumed by the user."
     },
-    {
+    {  # 3
         "mpg_code": "@E *",
         "action": "error",
         "description": "Player has encountered an error."
     },
-    {
+    {  # 4
         "mpg_code": "@silence",
         "action": None,
         "description": "Player has been silenced by the user."
     },
-    {
+    {  # 5
         "mpg_code": r"@V [0-9\.\s%]*",
         "action": None,
         "description": "Volume change event.",
     },
-    {
+    {  # 6
         "mpg_code": r"@S [a-zA-Z0-9\.\s-]*",
         "action": None,
         "description": "Stereo info event."
     },
-    {
+    {  # 7
         "mpg_code": "@I *",
         "action": None,
         "description": "Information event."
     },
-    {
+    {  # 8
         "mpg_code": pexpectTIMEOUT,
         "action": None,
         "description": "Timeout event."
+    },
+    {  # 9
+        "mpg_code": "@F *",
+        "action": "playing",
+        "description": "Playing a file."
     }
 ]
 

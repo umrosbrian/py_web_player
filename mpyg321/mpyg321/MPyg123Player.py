@@ -1,14 +1,17 @@
+import logging
+
 from .BasePlayer import BasePlayer
 from .consts import PlayerStatus
 
 
 class MPyg123Player(BasePlayer):
     """Player for legacy mpg321"""
-    def __init__(self, player=None, audiodevice=None, performance_mode=True, custom_args="", rva_mix=False):
+    def __init__(self, player=None, audiodevice=None, performance_mode=False, custom_args="", rva_mix=False):
         self.suitable_versions = ["mpg123"]
         self.default_player = "mpg123"
         custom_args += " --rva-mix " if rva_mix else ""
         super().__init__(player, audiodevice, performance_mode, custom_args)
+        logging.debug("MPyg123Player has been instantiated so BasePlayer has been inherited.")
         if performance_mode:
             self.silence_mpyg_output()
 
