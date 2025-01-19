@@ -36,7 +36,8 @@ def start_logging():
 
 start_logging()
 
-root_dir = os.environ['HOME']+'/Music/Music/Media.localized/Music'
+# root_dir = os.environ['HOME']+'/Music/Music/Media.localized/Music'
+root_dir = '/nas/album_id_dirs'
 # root_dir = '/Volumes'
 # root_dir = '/media/8TB/mp3'
 logging.debug(f"Issuing os.chdir({root_dir})")
@@ -52,40 +53,40 @@ playlist_file_aps_lst = []
 dir_aps_from_request = root_dir
 mpg123_stdout = ''
 
-def print_mpg123_stdout(process = p):
-    global mpg123_stdout
-
-    while True:
-        mpg123_stdout_bytes = process.readline()
-        mpg123_stdout = mpg123_stdout_bytes.decode('utf-8').strip()
-
-
-Thread(target=print_mpg123_stdout).start()
-
-
-# -------------------------------------------------------------------------------------------
-# Start threads as soon as the server starts to asynchronously push to the widgets.
-# -------------------------------------------------------------------------------------------
-@app.context_processor
-def prep_load_dict():
-    """This function will return a dict, which is available to all templates.  To access the values within the
-    templates, you only need to provide the dict's key.  Unused key/values are ignored so that you won't break anything
-     by creating a dict that's too big."""
-
-    return {'mpg123_stdout': mpg123_stdout}
+#def print_mpg123_stdout(process = p):
+#    global mpg123_stdout
+#
+#    while True:
+#        mpg123_stdout_bytes = process.readline()
+#        mpg123_stdout = mpg123_stdout_bytes.decode('utf-8').strip()
+#
+#
+#Thread(target=print_mpg123_stdout).start()
 
 
-def update_load():
-    """Because this function is issued in its own thread, it's ignorant of whatever else is happening.  It simply
-    reloads the contents of the table with the data returned by prep_load_dict() every n seconds. """
-
-    with app.app_context(), app.test_request_context():
-        while True:  # Maybe toggle this on and off as needed?
-            time.sleep(.5)
-            turbo.push(turbo.replace(render_template(template_name_or_list='mpg123_status_widget.html'),
-                                     target='async_table'))
-
-Thread(target=update_load).start()
+## -------------------------------------------------------------------------------------------
+## Start threads as soon as the server starts to asynchronously push to the widgets.
+## -------------------------------------------------------------------------------------------
+#@app.context_processor
+#def prep_load_dict():
+#    """This function will return a dict, which is available to all templates.  To access the values within the
+#    templates, you only need to provide the dict's key.  Unused key/values are ignored so that you won't break anything
+#     by creating a dict that's too big."""
+#
+#    return {'mpg123_stdout': mpg123_stdout}
+#
+#
+#def update_load():
+#    """Because this function is issued in its own thread, it's ignorant of whatever else is happening.  It simply
+#    reloads the contents of the table with the data returned by prep_load_dict() every n seconds. """
+#
+#    with app.app_context(), app.test_request_context():
+#        while True:  # Maybe toggle this on and off as needed?
+#            time.sleep(.5)
+#            turbo.push(turbo.replace(render_template(template_name_or_list='mpg123_status_widget.html'),
+#                                     target='async_table'))
+#
+#Thread(target=update_load).start()
 
 @app.route('/')
 def index():
@@ -173,8 +174,8 @@ def index():
 @app.route('/playlist')
 def playlist():
     # Make a list of file paths to pass to a view.
-    dir = '/Users/rosbrian/Music/Music/Media.localized/Music/Creedence Clearwater Revival/The Concert'
+    dir = '/nas/album_id_dirs/10'
     file_lst = []
     for file_name in os.listdir(dir):
-        file_lst.append(path.join(dir, file_name))
+        file_lst.append(os.path.join(dir, file_name))
     return render_template(template_name_or_list='playlist.html',  )

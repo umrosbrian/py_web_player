@@ -1,3 +1,8 @@
+# Setup
+
+- `brew install mpg123`
+
+
 # Background
 
 This is my simplified adaptation of [wupanhao/py-web-player](https://github.com/wupanhao/py-web-player), which is written for Python 2.  I made tweaks to `webplayer.py` by removing Chinese? characters and adapting it to Python 3.
